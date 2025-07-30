@@ -413,6 +413,29 @@ flashattention = [
     "ninja ; platform_system == 'Linux'",
     "flash-attn>=2.6.3 ; platform_system == 'Linux'",
 ]
+# Torch-first base for torch 2.7.0 + cu126 to ensure proper dependency order
+cu126-torch270-base = [
+    "unsloth[huggingface]",
+    "bitsandbytes>=0.45.5",  # This will pull in torch as a dependency
+    "unsloth[cu126onlytorch270]",  # This includes xformers for cu126 torch270
+]
+# Flash attention with precompiled wheels for torch 2.7.0 (assuming cxx11 ABI = TRUE, which is standard for modern torch)
+flashattentiontorch270cu126 = [
+    "packaging ; platform_system == 'Linux'",
+    "ninja ; platform_system == 'Linux'",
+    # Using latest available flash-attn precompiled wheels - fallback to 2.6 wheels if 2.7 specific aren't available
+    "flash-attn @ https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.2/flash_attn-2.8.2+cu12torch2.6cxx11abiTRUE-cp39-cp39-linux_x86_64.whl ; platform_system == 'Linux' and python_version == '3.9'",
+    "flash-attn @ https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.2/flash_attn-2.8.2+cu12torch2.6cxx11abiTRUE-cp310-cp310-linux_x86_64.whl ; platform_system == 'Linux' and python_version == '3.10'",
+    "flash-attn @ https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.2/flash_attn-2.8.2+cu12torch2.6cxx11abiTRUE-cp311-cp311-linux_x86_64.whl ; platform_system == 'Linux' and python_version == '3.11'",
+    "flash-attn @ https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.2/flash_attn-2.8.2+cu12torch2.6cxx11abiTRUE-cp312-cp312-linux_x86_64.whl ; platform_system == 'Linux' and python_version == '3.12'",
+    "flash-attn @ https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.2/flash_attn-2.8.2+cu12torch2.6cxx11abiTRUE-cp313-cp313-linux_x86_64.whl ; platform_system == 'Linux' and python_version == '3.13'",
+]
+# Flash attention that assumes torch is already installed - fallback to source build
+flashattention-postinstall = [
+    "packaging ; platform_system == 'Linux'",
+    "ninja ; platform_system == 'Linux'",
+    "flash-attn>=2.6.3 ; platform_system == 'Linux'",
+]
 colab-ampere = [
     "unsloth[colab-ampere-torch220]",
     "unsloth[flashattention]",
@@ -538,10 +561,8 @@ cu126-ampere-torch260 = [
     "unsloth[flashattention]",
 ]
 cu126-ampere-torch270 = [
-    "unsloth[huggingface]",
-    "bitsandbytes>=0.45.5",
-    "unsloth[cu126onlytorch270]",
-    "unsloth[flashattention]",
+    "unsloth[cu126-torch270-base]",
+    "unsloth[flashattentiontorch270cu126]",
 ]
 cu128-ampere-torch270 = [
     "unsloth[huggingface]",
