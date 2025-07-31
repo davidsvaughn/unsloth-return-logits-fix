@@ -1,12 +1,12 @@
 from unsloth import FastLanguageModel
 import torch
 
-# import torch._dynamo
-# torch._dynamo.config.disable = True  
+import torch._dynamo
+torch._dynamo.config.disable = True  
 
 import os
-os.environ['UNSLOTH_COMPILE_DISABLE']='1'
 os.environ['UNSLOTH_RETURN_LOGITS'] = '1'
+os.environ['UNSLOTH_COMPILE_DISABLE']='1'
 
 max_seq_length = 2048
 lora_rank = 32
