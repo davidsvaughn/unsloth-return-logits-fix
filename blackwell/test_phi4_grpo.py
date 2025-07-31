@@ -6,7 +6,7 @@ torch._dynamo.config.disable = True
 
 import os
 os.environ['UNSLOTH_RETURN_LOGITS'] = '1'
-os.environ['UNSLOTH_COMPILE_DISABLE']='1'
+# os.environ['UNSLOTH_COMPILE_DISABLE']='1'
 
 max_seq_length = 2048
 lora_rank = 32
@@ -172,7 +172,6 @@ trainer = SFTTrainer(
         eval_steps = 1,
     ),
 )
-
 trainer.train()
 
 text = tokenizer.apply_chat_template(
